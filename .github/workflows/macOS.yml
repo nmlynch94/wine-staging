@@ -47,8 +47,10 @@ jobs:
           # Avoid weird linker errors with Xcode 10 and later
           MACOSX_DEPLOYMENT_TARGET: "10.14"
         run: |
+          mkdir -p $GITHUB_WORKSPACE/build
           cd $GITHUB_WORKSPACE/wine
-          ./configure   --enable-win64 \
+          ./configure --prefix=$GITHUB_WORKSPACE/build \
+                        --enable-win64 \
                         --without-alsa \
                         --without-capi \
                         --without-dbus \
@@ -64,3 +66,13 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/wine
           make -j$(sysctl -n hw.ncpu 2>/dev/null)
+          
+      - name: Tar Wine
+        run: |
+          tar -czvf wine.tar.gz $GITHUB_WORKSPACE/build
+
+      - name: Upload Wine
+        uses: actions/upload-artifact@v3
+        with:
+          name: test
+          path: wine.tar.gz
