@@ -66,6 +66,11 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/wine
           make -j$(sysctl -n hw.ncpu 2>/dev/null)
+
+      - name: Build wine64
+        run: |
+          cd $GITHUB_WORKSPACE/wine
+          make -j$(sysctl -n hw.ncpu 2>/dev/null) install
           
       - name: Tar Wine
         run: |
